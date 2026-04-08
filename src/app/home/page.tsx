@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import OpportunityCard from "@/components/OpportunityCard";
@@ -18,8 +19,12 @@ interface FilterState {
 }
 
 export default function HomePage() {
+  const searchParams = useSearchParams();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [saved, setSaved] = useState<number[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<number[]>([]);
+  const [isSearchActive, setIsSearchActive] = useState(false);
   const [filters, setFilters] = useState<FilterState>({
     field: "All Fields",
     country: "All Countries", 
@@ -34,7 +39,22 @@ export default function HomePage() {
   useEffect(() => {
     setProfile(loadProfile());
     setSaved(loadSaved());
-  }, []);
+    
+    // Handle search parameters
+    const search = searchParams.get('search');
+    const results = searchParams.get('results');
+    
+    if (search && results) {
+      setSearchQuery(search);
+      try {
+        const resultIds = JSON.parse(results);
+        setSearchResults(resultIds);
+        setIsSearchActive(true);
+      } catch (error) {
+        console.error('Error parsing search results:', error);
+      }
+    }
+  }, [searchParams]);
 
   function handleSave(id: number) {
     setSaved((prev) => toggleSaved(id, prev));
@@ -67,7 +87,12 @@ export default function HomePage() {
 
   const allOpps = OPPORTUNITIES.map((o) => ({ ...o, score: computeMatch(o, profile) }));
 
-  const filtered = allOpps.filter((o) => {
+  // If search is active, filter by search results first
+  const searchFilteredOpps = isSearchActive 
+    ? allOpps.filter((o) => searchResults.includes(o.id))
+    : allOpps;
+
+  const filtered = searchFilteredOpps.filter((o) => {
     // Field filter
     if (filters.field !== "All Fields" && o.field !== filters.field) return false;
     
@@ -116,11 +141,22 @@ export default function HomePage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="font-serif text-3xl text-navy mb-2">
-                Your Opportunities
+                {isSearchActive ? `Search Results: "${searchQuery}"` : "Your Opportunities"}
               </h1>
               <p className="text-gray-600 text-sm">
-                {profile ? "Matched to your profile" : "Browse all opportunities"} · {sorted.length} opportunities
+                {isSearchActive 
+                  ? `Found ${sorted.length} result${sorted.length !== 1 ? 's' : ''} for "${searchQuery}"`
+                  : `${profile ? "Matched to your profile" : "Browse all opportunities"} · ${sorted.length} opportunities`
+                }
                 {getActiveFiltersCount() > 0 && ` · ${getActiveFiltersCount()} filter${getActiveFiltersCount() > 1 ? 's' : ''} applied`}
+                {isSearchActive && (
+                  <button 
+                    onClick={() => window.location.href = '/home'}
+                    className="ml-2 text-emerald-600 hover:text-emerald-700 underline text-sm"
+                  >
+                    Clear search
+                  </button>
+                )}
               </p>
             </div>
             {profile && (

@@ -1,18 +1,19 @@
 "use client";
 
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useEffect, useState, useRef } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { loadProfile } from "@/lib/matching";
+import { OPPORTUNITIES, Opportunity } from "@/data/opportunities";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [hasProfile, setHasProfile] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
-  const [notifications, setNotifications] = useState(3);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const userDropdownRef = useRef<HTMLDivElement>(null);
 
@@ -36,26 +37,54 @@ export default function Navbar() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // Implement search functionality
-    console.log("Searching for:", searchQuery);
+    
+    if (!searchQuery.trim()) {
+      router.push("/home");
+      return;
+    }
+
+    // Filter opportunities based on search query
+    const filteredOpportunities = OPPORTUNITIES.filter((opportunity: Opportunity) => {
+      const query = searchQuery.toLowerCase();
+      return (
+        opportunity.title.toLowerCase().includes(query) ||
+        opportunity.country.toLowerCase().includes(query) ||
+        opportunity.field.toLowerCase().includes(query) ||
+        opportunity.tags.some(tag => tag.toLowerCase().includes(query)) ||
+        opportunity.description.toLowerCase().includes(query)
+      );
+    });
+
+    // Navigate to home page with search results
+    const searchParams = new URLSearchParams();
+    searchParams.set('search', searchQuery);
+    searchParams.set('results', JSON.stringify(filteredOpportunities.map(op => op.id)));
+    
+    router.push(`/home?${searchParams.toString()}`);
+    setIsSearchOpen(false);
   };
 
   const navLinks = hasProfile ? [
     { href: "/home", label: "Opportunities" },
     { href: "/saved", label: "Saved" },
     { href: "/dashboard", label: "Dashboard" },
-    { href: "/profile", label: "Profile" },
+    // { href: "/profile", label: "Profile" },
   ] : [];
 
   return (
     <>
       <nav className="sticky top-0 z-50 bg-cream/92 backdrop-blur-md border-b border-gray-200 px-4 lg:px-8 h-16 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5 text-decoration-none">
-          <div className="w-8 h-8 bg-navy rounded-lg flex items-center justify-center shadow-soft">
-            <span className="text-white font-serif text-sm">A</span>
+        <Link href="/" className="flex items-center gap-4">
+          <div className="relative">
+            <img 
+              src="/aosep.png" 
+              alt="AOSEP Logo" 
+              className="h-10 w-auto"
+            />
           </div>
-          <span className="font-serif text-lg text-navy font-semibold">AOSEP</span>
+          <div className="flex items-center">
+          </div>
         </Link>
 
         {/* Search Bar - Desktop */}
@@ -96,20 +125,7 @@ export default function Navbar() {
             </NavLink>
           ))}
           
-          {/* Notifications */}
-          {hasProfile && (
-            <button className="relative p-2 text-gray-600 hover:text-navy transition-colors">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-              </svg>
-              {notifications > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-emerald text-white text-xs rounded-full flex items-center justify-center">
-                  {notifications}
-                </span>
-              )}
-            </button>
-          )}
-
+        
           {/* User Dropdown */}
           {hasProfile ? (
             <div ref={userDropdownRef} className="relative">
