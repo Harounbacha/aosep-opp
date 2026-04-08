@@ -124,9 +124,10 @@ export default function Navbar() {
               {link.label}
             </NavLink>
           ))}
+        </div>
           
         
-          {/* User Dropdown */}
+          {/* User Dropdown
           {hasProfile ? (
             <div ref={userDropdownRef} className="relative">
               <button
@@ -161,7 +162,7 @@ export default function Navbar() {
               Get Started
             </Link>
           )}
-        </div>
+        </div> */}
 
         {/* Mobile Menu Button */}
         <button
