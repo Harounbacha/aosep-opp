@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import Navbar from "@/components/Navbar";
@@ -18,7 +18,7 @@ interface FilterState {
   sortBy: string;
 }
 
-export default function HomePage() {
+function HomePageContent() {
   const searchParams = useSearchParams();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [saved, setSaved] = useState<number[]>([]);
@@ -571,5 +571,13 @@ export default function HomePage() {
       
       <Footer />
     </div>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
+      <HomePageContent />
+    </Suspense>
   );
 }
