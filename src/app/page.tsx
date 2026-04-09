@@ -145,6 +145,7 @@ export default function LandingPage() {
 
       {/* Stats strip */}
       <div
+        data-dark-section
         style={{
           background: "var(--navy)",
           padding: "2rem 1.5rem",
@@ -258,6 +259,7 @@ export default function LandingPage() {
 
       {/* CTA Section */}
       <section
+        data-dark-section
         style={{
           padding: "4rem 1.5rem",
           background: "var(--navy)",

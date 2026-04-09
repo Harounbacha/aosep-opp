@@ -15,7 +15,7 @@ export default function Footer() {
       style={{
         background: "var(--navy)",
         color: "rgba(255,255,255,0.6)",
-        padding: "3rem 1.5rem",
+        padding: "2rem 1.5rem",
         marginTop: "4rem",
       }}
     >
@@ -24,11 +24,12 @@ export default function Footer() {
           maxWidth: 1100,
           margin: "0 auto",
           display: "grid",
-          gridTemplateColumns: "1fr 2fr",
-          gap: "3rem",
+          gridTemplateColumns: "1fr",
+          gap: "2rem",
           paddingBottom: "2rem",
           borderBottom: "1px solid rgba(255,255,255,0.1)",
         }}
+        className="md:grid-cols-[1fr_2fr] md:gap-[3rem]"
       >
         <div>
           <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: "1.3rem", color: "#fff", marginBottom: 8 }}>
@@ -56,7 +57,7 @@ export default function Footer() {
           </Link>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1.5rem" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "1.5rem" }} className="md:grid-cols-3">
           <div>
             <div
               style={{

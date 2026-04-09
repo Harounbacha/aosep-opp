@@ -14,12 +14,39 @@ export default function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const [isOverDark, setIsOverDark] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const userDropdownRef = useRef<HTMLDivElement>(null);
+  const navRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     setHasProfile(!!loadProfile());
   }, [pathname]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!navRef.current) return;
+      const navRect = navRef.current.getBoundingClientRect();
+      const navBottom = navRect.bottom;
+      
+      // Check if over dark sections (stats strip or CTA)
+      const darkSections = document.querySelectorAll('[data-dark-section]');
+      let overDark = false;
+      
+      darkSections.forEach((section) => {
+        const rect = section.getBoundingClientRect();
+        if (navBottom > rect.top && navBottom < rect.bottom) {
+          overDark = true;
+        }
+      });
+      
+      setIsOverDark(overDark);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // Initial check
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -73,14 +100,14 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="sticky top-0 z-50 bg-cream/92 backdrop-blur-md border-b border-gray-200 px-4 lg:px-8 h-16 flex items-center justify-between">
+      <nav ref={navRef} className="sticky top-0 z-50 bg-cream/92 backdrop-blur-md border-b border-gray-200 px-4 lg:px-8 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-4">
           <div className="relative">
             <img 
-              src="/aosep.png" 
-              alt="AOSEP Logo" 
-              className="h-10 w-auto"
+              src={isOverDark ? "/aosep-light.png" : "/aosep.png"}
+              alt="AOSEP Logo"
+              className="h-10 w-auto transition-opacity duration-200"
             />
           </div>
           <div className="flex items-center">
@@ -120,7 +147,7 @@ export default function Navbar() {
         {/* Desktop Navigation */}
         <div className="hidden lg:flex items-center gap-2">
           {navLinks.map((link) => (
-            <NavLink key={link.href} href={link.href} active={pathname === link.href}>
+            <NavLink key={link.href} href={link.href} active={pathname === link.href} isOverDark={isOverDark}>
               {link.label}
             </NavLink>
           ))}
@@ -229,13 +256,15 @@ export default function Navbar() {
   );
 }
 
-function NavLink({ href, active, children }: { href: string; active: boolean; children: React.ReactNode }) {
+function NavLink({ href, active, isOverDark, children }: { href: string; active: boolean; isOverDark?: boolean; children: React.ReactNode }) {
   return (
     <Link
       href={href}
       className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
         active
           ? "bg-navy text-white"
+          : isOverDark
+          ? "text-white/70 hover:bg-white/10 hover:text-white"
           : "text-gray-700 hover:bg-gray-100"
       }`}
     >
