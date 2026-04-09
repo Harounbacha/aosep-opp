@@ -450,13 +450,18 @@ function HomePageContent() {
             )}
 
             {sorted.length === 0 && (
-              <div className="text-center py-16 text-gray-500">
-                <div className="text-6xl mb-4">??</div>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">{t.home.noOpportunities}</h3>
-                <p className="text-gray-600 mb-6">{t.home.adjustFilters}</p>
-                <button onClick={clearAllFilters} className="btn btn-outline">
-                  {t.home.clearFilters}
-                </button>
+              <div className="text-center py-16 px-6 rounded-2xl border border-gray-200 bg-white shadow-soft">
+                <div className="text-5xl mb-4">🔎</div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t.home.noOpportunities}</h3>
+                <p className="text-gray-600 mb-6 max-w-md mx-auto">{t.home.adjustFilters}</p>
+                <div className="flex items-center justify-center gap-3 flex-wrap">
+                  <button onClick={clearAllFilters} className="btn btn-outline">
+                    {t.home.clearFilters}
+                  </button>
+                  <Link href="/onboarding" className="btn btn-primary">
+                    {t.nav.getStarted}
+                  </Link>
+                </div>
               </div>
             )}
           </main>
@@ -578,7 +583,16 @@ function HomePageContent() {
 
 export default function HomePage() {
   return (
-    <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center min-h-screen text-gray-600">
+          <div className="flex items-center gap-3">
+            <div className="loading-spinner w-5 h-5" />
+            <span>Loading opportunities...</span>
+          </div>
+        </div>
+      }
+    >
       <HomePageContent />
     </Suspense>
   );
