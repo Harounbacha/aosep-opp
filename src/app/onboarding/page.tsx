@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { UserProfile, saveProfile } from "@/lib/matching";
 
@@ -10,14 +10,13 @@ const FIELDS = [
   { label: "Computer Science", value: "Computer Science", emoji: "💻" },
   { label: "Engineering", value: "Engineering", emoji: "⚙️" },
   { label: "Business", value: "Business", emoji: "📊" },
+  { label: "Law", value: "Law", emoji: "⚖️" },
 ];
 const LEVELS = ["L1", "L2", "L3", "Master", "High school", "None"];
 const ENGLISH_LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
 export default function OnboardingPage() {
   const router = useRouter();
-  const [jsReady, setJsReady] = useState(false);
-  const [jsError, setJsError] = useState("");
   const [step, setStep] = useState<Step>(1);
   const [form, setForm] = useState<UserProfile>({
     field: "Computer Science",
@@ -35,15 +34,6 @@ export default function OnboardingPage() {
     saveProfile(form);
     router.push("/home");
   }
-
-  useEffect(() => {
-    setJsReady(true);
-    const handleError = (event: ErrorEvent) => {
-      setJsError(event.message || "Unknown JavaScript error");
-    };
-    window.addEventListener("error", handleError);
-    return () => window.removeEventListener("error", handleError);
-  }, []);
 
   const totalSteps = 3;
   const progress = (step / totalSteps) * 100;
@@ -103,20 +93,6 @@ export default function OnboardingPage() {
             boxShadow: "var(--shadow-md)",
           }}
         >
-          <div
-            style={{
-              marginBottom: "1rem",
-              borderRadius: 10,
-              padding: "0.5rem 0.75rem",
-              fontSize: 12,
-              background: jsError ? "#FEE2E2" : jsReady ? "#E6F7F1" : "#FEF3C7",
-              color: jsError ? "#991B1B" : jsReady ? "#065F46" : "#92400E",
-              border: `1px solid ${jsError ? "#FCA5A5" : jsReady ? "#A7F3D0" : "#FCD34D"}`,
-            }}
-          >
-            {jsError ? `JS Error: ${jsError}` : jsReady ? "JavaScript: ready" : "JavaScript: loading..."}
-          </div>
-
           <div
             style={{
               fontSize: 13,
