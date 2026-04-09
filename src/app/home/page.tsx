@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import OpportunityCard from "@/components/OpportunityCard";
 import { OPPORTUNITIES, FIELDS, COUNTRIES } from "@/data/opportunities";
 import { UserProfile, loadProfile, loadSaved, toggleSaved, computeMatch } from "@/lib/matching";
+import { useLanguage } from "@/lib/LanguageContext";
 
 interface FilterState {
   field: string;
@@ -19,6 +20,7 @@ interface FilterState {
 }
 
 function HomePageContent() {
+  const { t } = useLanguage();
   const searchParams = useSearchParams();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [saved, setSaved] = useState<number[]>([]);
@@ -141,20 +143,20 @@ function HomePageContent() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="font-serif text-3xl text-navy mb-2">
-                {isSearchActive ? `Search Results: "${searchQuery}"` : "Your Opportunities"}
+                {isSearchActive ? `${t.home.searchResults}: "${searchQuery}"` : t.home.title}
               </h1>
               <p className="text-gray-600 text-sm">
                 {isSearchActive 
-                  ? `Found ${sorted.length} result${sorted.length !== 1 ? 's' : ''} for "${searchQuery}"`
-                  : `${profile ? "Matched to your profile" : "Browse all opportunities"} · ${sorted.length} opportunities`
+                  ? `${t.home.found} ${sorted.length} ${t.home.results} for "${searchQuery}"`
+                  : `${profile ? t.home.matchedToProfile : t.home.browseAll} · ${sorted.length} ${t.home.opportunities}`
                 }
-                {getActiveFiltersCount() > 0 && ` · ${getActiveFiltersCount()} filter${getActiveFiltersCount() > 1 ? 's' : ''} applied`}
+                {getActiveFiltersCount() > 0 && ` · ${getActiveFiltersCount()} ${getActiveFiltersCount() > 1 ? t.home.filters : t.home.filters.toLowerCase()} ${t.home.clearAll}`}
                 {isSearchActive && (
                   <button 
                     onClick={() => window.location.href = '/home'}
                     className="ml-2 text-emerald-600 hover:text-emerald-700 underline text-sm"
                   >
-                    Clear search
+                    {t.home.clearAll}
                   </button>
                 )}
               </p>
@@ -164,7 +166,7 @@ function HomePageContent() {
                 href="/dashboard" 
                 className="btn btn-outline btn-sm"
               >
-                📊 View Dashboard
+                📊 {t.nav.dashboard}
               </Link>
             )}
           </div>
@@ -176,20 +178,20 @@ function HomePageContent() {
             <div className="bg-white rounded-2xl border border-gray-200 p-4 sm:p-5 sticky top-20 lg:top-24 shadow-soft mobile-sidebar">
               {/* Header */}
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-navy text-sm uppercase tracking-wider">Filters</h3>
+                <h3 className="font-semibold text-navy text-sm uppercase tracking-wider">{t.home.filters}</h3>
                 {getActiveFiltersCount() > 0 && (
                   <button
                     onClick={clearAllFilters}
                     className="text-xs text-gray-500 hover:text-red-600 transition-colors"
                   >
-                    Clear all
+                    {t.home.clearAll}
                   </button>
                 )}
               </div>
 
               {/* Field filter */}
               <div className="mb-6">
-                <h4 className="text-sm font-medium text-gray-700 mb-3">Field</h4>
+                <h4 className="text-sm font-medium text-gray-700 mb-3">{t.home.field}</h4>
                 <div className="flex flex-wrap gap-2">
                   {FIELDS.map((f) => (
                     <button
@@ -209,7 +211,7 @@ function HomePageContent() {
 
               {/* Country filter */}
               <div className="mb-6">
-                <h4 className="text-sm font-medium text-gray-700 mb-3">Country</h4>
+                <h4 className="text-sm font-medium text-gray-700 mb-3">{t.home.country}</h4>
                 <div className="flex flex-wrap gap-2">
                   {COUNTRIES.map((c) => (
                     <button
@@ -229,12 +231,12 @@ function HomePageContent() {
 
               {/* Goal filter */}
               <div className="mb-6">
-                <h4 className="text-sm font-medium text-gray-700 mb-3">Opportunity Type</h4>
+                <h4 className="text-sm font-medium text-gray-700 mb-3">{t.home.opportunityType}</h4>
                 <div className="space-y-2">
                   {[
-                    { value: 'all', label: 'All Types' },
-                    { value: 'study', label: 'Study Programs' },
-                    { value: 'internship', label: 'Internships' }
+                    { value: 'all', label: t.home.allTypes },
+                    { value: 'study', label: t.home.studyPrograms },
+                    { value: 'internship', label: t.home.internships }
                   ].map((goal) => (
                     <button
                       key={goal.value}
@@ -256,7 +258,7 @@ function HomePageContent() {
                 onClick={() => setIsFilterExpanded(!isFilterExpanded)}
                 className="w-full flex items-center justify-between px-3 py-2 bg-gray-50 hover:bg-gray-100 rounded-lg text-sm font-medium text-gray-700 transition-colors"
               >
-                <span>Advanced Filters</span>
+                <span>{t.home.advancedFilters}</span>
                 <svg
                   className={`w-4 h-4 transition-transform ${isFilterExpanded ? 'rotate-180' : ''}`}
                   fill="none"
@@ -272,12 +274,12 @@ function HomePageContent() {
                 <div className="mt-4 space-y-4 animate-slide-up">
                   {/* IELTS Required */}
                   <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-3">IELTS Required</h4>
+                    <h4 className="text-sm font-medium text-gray-700 mb-3">{t.home.ieltsRequired}</h4>
                     <div className="space-y-2">
                       {[
-                        { value: null, label: 'All' },
-                        { value: true, label: 'Required' },
-                        { value: false, label: 'Not Required' }
+                        { value: null, label: t.home.all },
+                        { value: true, label: t.home.required },
+                        { value: false, label: t.home.notRequired }
                       ].map((ielts) => (
                         <button
                           key={ielts.value?.toString() || 'all'}
@@ -296,12 +298,12 @@ function HomePageContent() {
 
                   {/* Deadline Range */}
                   <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-3">Deadline</h4>
+                    <h4 className="text-sm font-medium text-gray-700 mb-3">{t.home.deadline}</h4>
                     <div className="space-y-2">
                       {[
-                        { value: 'all', label: 'All Deadlines' },
-                        { value: 'urgent', label: 'Urgent (within 7 days)' },
-                        { value: 'month', label: 'This Month' }
+                        { value: 'all', label: t.home.allDeadlines },
+                        { value: 'urgent', label: t.home.urgent },
+                        { value: 'month', label: t.home.thisMonth }
                       ].map((deadline) => (
                         <button
                           key={deadline.value}
@@ -320,12 +322,12 @@ function HomePageContent() {
 
                   {/* Sort By */}
                   <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-3">Sort By</h4>
+                    <h4 className="text-sm font-medium text-gray-700 mb-3">{t.home.sortBy}</h4>
                     <div className="space-y-2">
                       {[
-                        { value: 'match', label: 'Best Match' },
-                        { value: 'deadline', label: 'Deadline' },
-                        { value: 'title', label: 'Title A-Z' }
+                        { value: 'match', label: t.home.bestMatch },
+                        { value: 'deadline', label: t.home.deadlineSort },
+                        { value: 'title', label: t.home.titleAZ }
                       ].map((sort) => (
                         <button
                           key={sort.value}
@@ -357,7 +359,7 @@ function HomePageContent() {
                     letterSpacing: ".08em",
                   }}
                 >
-                  Coming Soon
+                  {t.landing.features.comingSoon}
                 </div>
                 {["🛣️ Learning paths", "🤝 Peer mentorship", "✈️ Study abroad guide", "📁 Portfolio builder"].map(
                   (item) => (
@@ -380,11 +382,11 @@ function HomePageContent() {
                     lineHeight: 1.6,
                   }}
                 >
-                  <strong>Tip:</strong>{" "}
+                  <strong>{t.home.tip}</strong>{" "}
                   <Link href="/onboarding" style={{ color: "#065F46", fontWeight: 600 }}>
-                    Set up your profile
+                    {t.nav.getStarted}
                   </Link>{" "}
-                  to get personalized match scores.
+                  {t.home.setupProfile}
                 </div>
               )}
             </div>
@@ -416,12 +418,12 @@ function HomePageContent() {
               <div className="mb-8">
                 <div className="flex items-center justify-between mb-6">
                   <div>
-                    <p className="section-label mb-2">Top Picks</p>
+                    <p className="section-label mb-2">{t.home.topPicks}</p>
                     <h2 className="font-serif text-2xl text-navy">
-                      Recommended for You
+                      {t.home.recommendedForYou}
                     </h2>
                   </div>
-                  <span className="badge badge-emerald">{recommended.length} matches</span>
+                  <span className="badge badge-emerald">{recommended.length} {t.home.matches}</span>
                 </div>
                 <div className="grid gap-4">
                   {recommended.map((o) => (
@@ -435,9 +437,9 @@ function HomePageContent() {
               <div>
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="font-serif text-xl text-navy">
-                    Other Opportunities
+                    {t.home.otherOpportunities}
                   </h2>
-                  <span className="badge badge-gray">{other.length} listed</span>
+                  <span className="badge badge-gray">{other.length} {t.home.listed}</span>
                 </div>
                 <div className="grid gap-4">
                   {other.map((o) => (
@@ -450,10 +452,10 @@ function HomePageContent() {
             {sorted.length === 0 && (
               <div className="text-center py-16 text-gray-500">
                 <div className="text-6xl mb-4">??</div>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No opportunities found</h3>
-                <p className="text-gray-600 mb-6">Try adjusting your filters or search terms</p>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">{t.home.noOpportunities}</h3>
+                <p className="text-gray-600 mb-6">{t.home.adjustFilters}</p>
                 <button onClick={clearAllFilters} className="btn btn-outline">
-                  Clear Filters
+                  {t.home.clearFilters}
                 </button>
               </div>
             )}

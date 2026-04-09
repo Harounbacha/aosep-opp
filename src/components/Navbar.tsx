@@ -5,8 +5,11 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { loadProfile } from "@/lib/matching";
 import { OPPORTUNITIES, Opportunity } from "@/data/opportunities";
+import LanguageSwitcher from "./LanguageSwitcher";
+import { useLanguage } from "@/lib/LanguageContext";
 
 export default function Navbar() {
+  const { t } = useLanguage();
   const pathname = usePathname();
   const router = useRouter();
   const isOnboarding = pathname === "/onboarding";
@@ -15,12 +18,39 @@ export default function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const [isOverDark, setIsOverDark] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const userDropdownRef = useRef<HTMLDivElement>(null);
+  const navRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     setHasProfile(!!loadProfile());
   }, [pathname]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!navRef.current) return;
+      const navRect = navRef.current.getBoundingClientRect();
+      const navBottom = navRect.bottom;
+      
+      // Check if over dark sections (stats strip or CTA)
+      const darkSections = document.querySelectorAll('[data-dark-section]');
+      let overDark = false;
+      
+      darkSections.forEach((section) => {
+        const rect = section.getBoundingClientRect();
+        if (navBottom > rect.top && navBottom < rect.bottom) {
+          overDark = true;
+        }
+      });
+      
+      setIsOverDark(overDark);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // Initial check
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
@@ -70,22 +100,22 @@ export default function Navbar() {
   };
 
   const navLinks = hasProfile ? [
-    { href: "/home", label: "Opportunities" },
-    { href: "/saved", label: "Saved" },
-    { href: "/dashboard", label: "Dashboard" },
+    { href: "/home", label: t.nav.opportunities },
+    { href: "/saved", label: t.nav.saved },
+    { href: "/dashboard", label: t.nav.dashboard },
     // { href: "/profile", label: "Profile" },
   ] : [];
 
   return (
     <>
-      <nav className="sticky top-0 z-50 bg-cream/92 backdrop-blur-md border-b border-gray-200 px-4 lg:px-8 h-16 flex items-center justify-between">
+      <nav ref={navRef} className="sticky top-0 z-50 bg-cream/92 backdrop-blur-md border-b border-gray-200 px-4 lg:px-8 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-4">
           <div className="relative">
             <img 
-              src="/aosep.png" 
-              alt="AOSEP Logo" 
-              className="h-10 w-auto"
+              src={isOverDark ? "/aosep-light.png" : "/aosep.png"}
+              alt="AOSEP Logo"
+              className="h-10 w-auto transition-opacity duration-200"
             />
           </div>
           <div className="flex items-center">
@@ -100,7 +130,7 @@ export default function Navbar() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onFocus={() => setIsSearchOpen(true)}
-              placeholder="Search opportunities..."
+              placeholder={t.nav.searchPlaceholder}
               className="w-full px-4 py-2 pl-10 pr-4 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-navy focus:border-transparent transition-all duration-200"
             />
             <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
@@ -125,10 +155,13 @@ export default function Navbar() {
         {/* Desktop Navigation */}
         <div className="hidden lg:flex items-center gap-2">
           {navLinks.map((link) => (
-            <NavLink key={link.href} href={link.href} active={pathname === link.href}>
+            <NavLink key={link.href} href={link.href} active={pathname === link.href} isOverDark={isOverDark}>
               {link.label}
             </NavLink>
           ))}
+          <div className="ml-2">
+            <LanguageSwitcher />
+          </div>
         </div>
           
         
@@ -192,7 +225,7 @@ export default function Navbar() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search opportunities..."
+                placeholder={t.nav.searchPlaceholder}
                 className="w-full px-4 py-2 pl-10 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-navy focus:border-transparent"
               />
               <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
@@ -218,6 +251,14 @@ export default function Navbar() {
                   {link.label}
                 </Link>
               ))}
+
+              {/* Language Switcher - Mobile */}
+              <div className="px-4 py-3 border-t border-gray-100 mt-2">
+                <span className="text-xs text-gray-500 uppercase tracking-wider">Language / اللغة</span>
+                <div className="mt-2">
+                  <LanguageSwitcher />
+                </div>
+              </div>
               
               {!hasProfile && (
                 <Link
@@ -236,13 +277,15 @@ export default function Navbar() {
   );
 }
 
-function NavLink({ href, active, children }: { href: string; active: boolean; children: React.ReactNode }) {
+function NavLink({ href, active, isOverDark, children }: { href: string; active: boolean; isOverDark?: boolean; children: React.ReactNode }) {
   return (
     <Link
       href={href}
       className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
         active
           ? "bg-navy text-white"
+          : isOverDark
+          ? "text-white/70 hover:bg-white/10 hover:text-white"
           : "text-gray-700 hover:bg-gray-100"
       }`}
     >

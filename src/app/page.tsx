@@ -1,54 +1,59 @@
+"use client";
+
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-
-const FEATURES = [
-  {
-    icon: "🎯",
-    title: "Guided Opportunities",
-    desc: "Discover scholarships, internships, and programs matched to your profile with a simple match score.",
-    now: true,
-  },
-  {
-    icon: "🛣️",
-    title: "Learning Paths",
-    desc: "Structured skill development tracks from beginner to industry-ready — curated for the Algerian context.",
-    now: false,
-  },
-  {
-    icon: "🤝",
-    title: "Peer Mentorship",
-    desc: "Connect with Algerian students who have already walked the path you want to take.",
-    now: false,
-  },
-  {
-    icon: "🏛️",
-    title: "Training Centers",
-    desc: "Physical community hubs across Algeria with guided learning sessions and events.",
-    now: false,
-  },
-  {
-    icon: "✈️",
-    title: "Study Abroad Guidance",
-    desc: "End-to-end support for overseas university applications, visa processes, and scholarships.",
-    now: false,
-  },
-  {
-    icon: "📁",
-    title: "Portfolio Builder",
-    desc: "Build a verifiable professional profile visible to local and global employers.",
-    now: false,
-  },
-];
-
-const STATS = [
-  { val: "12+", label: "Opportunities Listed" },
-  { val: "12", label: "Countries Covered" },
-  { val: "3", label: "Fields Supported" },
-  { val: "Free", label: "Always Free to Use" },
-];
+import { useLanguage } from "@/lib/LanguageContext";
 
 export default function LandingPage() {
+  const { t, language } = useLanguage();
+
+  const features = [
+    {
+      icon: "🎯",
+      title: t.landing.features.guidedOpportunities.title,
+      desc: t.landing.features.guidedOpportunities.desc,
+      now: true,
+    },
+    {
+      icon: "🛣️",
+      title: t.landing.features.learningPaths.title,
+      desc: t.landing.features.learningPaths.desc,
+      now: false,
+    },
+    {
+      icon: "🤝",
+      title: t.landing.features.peerMentorship.title,
+      desc: t.landing.features.peerMentorship.desc,
+      now: false,
+    },
+    {
+      icon: "🏛️",
+      title: t.landing.features.trainingCenters.title,
+      desc: t.landing.features.trainingCenters.desc,
+      now: false,
+    },
+    {
+      icon: "✈️",
+      title: t.landing.features.studyAbroad.title,
+      desc: t.landing.features.studyAbroad.desc,
+      now: false,
+    },
+    {
+      icon: "📁",
+      title: t.landing.features.portfolioBuilder.title,
+      desc: t.landing.features.portfolioBuilder.desc,
+      now: false,
+    },
+  ];
+
+  const stats = [
+    { val: "12+", label: t.landing.stats.opportunities },
+    { val: "12", label: t.landing.stats.countries },
+    { val: "3", label: t.landing.stats.fields },
+    { val: language === 'dz' ? 'مجاني' : 'Free', label: t.landing.stats.free },
+  ];
+
   return (
     <div className="page-enter">
       <Navbar />
@@ -83,7 +88,7 @@ export default function LandingPage() {
             border: "1px solid rgba(14,159,110,0.2)",
           }}
         >
-          🇩🇿 Built for Algerian Students
+          🇩🇿 {t.landing.heroBadge}
         </div>
 
         <h1
@@ -96,10 +101,10 @@ export default function LandingPage() {
             lineHeight: 1.15,
           }}
         >
-          Find the best{" "}
+          {t.landing.heroTitle.split('global opportunities')[0]}
           <em style={{ fontStyle: "italic", color: "var(--emerald)" }}>global opportunities</em>
           <br />
-          for Algerian students
+          {t.landing.heroTitle.split('global opportunities')[1]?.replace(' for ', '') || 'for Algerian students'}
         </h1>
 
         <p
@@ -111,8 +116,7 @@ export default function LandingPage() {
             lineHeight: 1.7,
           }}
         >
-          AOSEP matches you with scholarships, internships, and programs worldwide — then guides you step-by-step
-          through every application.
+          {t.landing.heroSubtitle}
         </p>
 
         <div style={{ display: "flex", gap: 12, alignItems: "center", justifyContent: "center", flexWrap: "wrap" }}>
@@ -121,10 +125,10 @@ export default function LandingPage() {
             className="btn btn-primary"
             style={{ padding: "13px 32px", fontSize: 16, textDecoration: "none" }}
           >
-            Get Started →
+            {t.nav.getStarted} →
           </Link>
           <Link href="/home" className="btn btn-ghost" style={{ textDecoration: "none" }}>
-            Browse Opportunities
+            {t.landing.browseOpportunities}
           </Link>
         </div>
 
@@ -145,6 +149,7 @@ export default function LandingPage() {
 
       {/* Stats strip */}
       <div
+        data-dark-section
         style={{
           background: "var(--navy)",
           padding: "2rem 1.5rem",
@@ -154,7 +159,7 @@ export default function LandingPage() {
           textAlign: "center",
         }}
       >
-        {STATS.map((s) => (
+        {stats.map((s: { val: string; label: string }) => (
           <div key={s.val}>
             <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: "2rem", color: "#fff" }}>{s.val}</div>
             <div style={{ fontSize: 13, color: "rgba(255,255,255,0.55)", marginTop: 4 }}>{s.label}</div>
@@ -167,7 +172,7 @@ export default function LandingPage() {
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: "3rem" }}>
             <p className="section-label" style={{ marginBottom: "0.75rem" }}>
-              What We Do
+              {t.landing.features.title}
             </p>
             <h2
               style={{
@@ -177,11 +182,10 @@ export default function LandingPage() {
                 marginBottom: "1rem",
               }}
             >
-              Everything you need to access global opportunities
+              {t.landing.features.subtitle}
             </h2>
             <p style={{ color: "#6B7280", maxWidth: 500, margin: "0 auto", fontSize: 15 }}>
-              Our first release focuses on what matters most: matching you to the right opportunities and telling you
-              exactly how to get them.
+              {t.landing.features.description}
             </p>
           </div>
 
@@ -192,7 +196,7 @@ export default function LandingPage() {
               gap: "1.25rem",
             }}
           >
-            {FEATURES.map((f) => (
+            {features.map((f: { icon: string; title: string; desc: string; now: boolean }) => (
               <div
                 key={f.title}
                 style={{
@@ -217,7 +221,7 @@ export default function LandingPage() {
                       marginBottom: 8,
                     }}
                   >
-                    Coming Soon
+                    {t.landing.features.comingSoon}
                   </div>
                 )}
                 <div
@@ -246,7 +250,7 @@ export default function LandingPage() {
                       className="btn btn-emerald btn-sm"
                       style={{ textDecoration: "none", fontSize: 13 }}
                     >
-                      Try Now →
+                      {t.landing.features.tryNow} →
                     </Link>
                   </div>
                 )}
@@ -258,6 +262,7 @@ export default function LandingPage() {
 
       {/* CTA Section */}
       <section
+        data-dark-section
         style={{
           padding: "4rem 1.5rem",
           background: "var(--navy)",
@@ -273,11 +278,10 @@ export default function LandingPage() {
               marginBottom: "1rem",
             }}
           >
-            Ready to find your opportunity?
+            {t.landing.cta.title}
           </h2>
           <p style={{ color: "rgba(255,255,255,0.6)", marginBottom: "2rem", lineHeight: 1.7 }}>
-            Tell us about yourself in 2 minutes, and we'll show you the best opportunities available right now for
-            Algerian students.
+            {t.landing.cta.subtitle}
           </p>
           <Link
             href="/onboarding"
@@ -295,7 +299,7 @@ export default function LandingPage() {
               transition: "background .15s",
             }}
           >
-            Get Started — It&apos;s Free →
+            {t.landing.getStartedFree} →
           </Link>
         </div>
       </section>
