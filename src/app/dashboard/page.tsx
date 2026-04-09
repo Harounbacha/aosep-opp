@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { loadProfile, loadSaved } from "@/lib/matching";
 import { OPPORTUNITIES } from "@/data/opportunities";
+import { useLanguage } from "@/lib/LanguageContext";
 
 interface Application {
   id: number;
@@ -28,6 +29,7 @@ interface DashboardStats {
 }
 
 export default function Dashboard() {
+  const { t } = useLanguage();
   const [applications, setApplications] = useState<Application[]>([]);
   const [stats, setStats] = useState<DashboardStats>({
     totalSaved: 0,
@@ -104,13 +106,13 @@ export default function Dashboard() {
 
   const getStatusLabel = (status: Application['status']) => {
     switch (status) {
-      case 'saved': return 'Saved';
-      case 'applied': return 'Applied';
-      case 'interview': return 'Interview';
-      case 'offered': return 'Offer Received';
-      case 'rejected': return 'Rejected';
-      case 'accepted': return 'Accepted';
-      default: return 'Saved';
+      case 'saved': return t.dashboard.status.saved;
+      case 'applied': return t.dashboard.status.applied;
+      case 'interview': return t.dashboard.status.interview;
+      case 'offered': return t.dashboard.status.offered;
+      case 'rejected': return t.dashboard.status.rejected;
+      case 'accepted': return t.dashboard.status.accepted;
+      default: return t.dashboard.status.saved;
     }
   };
 
@@ -133,10 +135,10 @@ export default function Dashboard() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="font-serif text-3xl text-navy mb-2">
-            My Dashboard
+            {t.dashboard.title}
           </h1>
           <p className="text-gray-600">
-            Track your applications and monitor your progress
+            {t.dashboard.subtitle}
           </p>
         </div>
 
@@ -144,57 +146,57 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-soft">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-gray-500 text-sm font-medium">Saved</span>
+              <span className="text-gray-500 text-sm font-medium">{t.dashboard.saved}</span>
               <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
                 <span className="text-emerald-600 text-sm">📋</span>
               </div>
             </div>
             <div className="text-2xl font-bold text-navy">{stats.totalSaved}</div>
-            <div className="text-xs text-gray-500">Opportunities</div>
+            <div className="text-xs text-gray-500">{t.dashboard.savedDesc}</div>
           </div>
 
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-soft">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-gray-500 text-sm font-medium">Applied</span>
+              <span className="text-gray-500 text-sm font-medium">{t.dashboard.applied}</span>
               <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
                 <span className="text-blue-600 text-sm">📤</span>
               </div>
             </div>
             <div className="text-2xl font-bold text-navy">{stats.totalApplied}</div>
-            <div className="text-xs text-gray-500">Applications</div>
+            <div className="text-xs text-gray-500">{t.dashboard.appliedDesc}</div>
           </div>
 
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-soft">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-gray-500 text-sm font-medium">Interviews</span>
+              <span className="text-gray-500 text-sm font-medium">{t.dashboard.interviews}</span>
               <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
                 <span className="text-purple-600 text-sm">📅</span>
               </div>
             </div>
             <div className="text-2xl font-bold text-navy">{stats.interviewsScheduled}</div>
-            <div className="text-xs text-gray-500">Scheduled</div>
+            <div className="text-xs text-gray-500">{t.dashboard.interviewsDesc}</div>
           </div>
 
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-soft">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-gray-500 text-sm font-medium">Offers</span>
+              <span className="text-gray-500 text-sm font-medium">{t.dashboard.offers}</span>
               <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
                 <span className="text-emerald-600 text-sm">🎉</span>
               </div>
             </div>
             <div className="text-2xl font-bold text-navy">{stats.offersReceived}</div>
-            <div className="text-xs text-gray-500">Received</div>
+            <div className="text-xs text-gray-500">{t.dashboard.offersDesc}</div>
           </div>
 
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-soft">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-gray-500 text-sm font-medium">Profile</span>
+              <span className="text-gray-500 text-sm font-medium">{t.dashboard.profile}</span>
               <div className="w-8 h-8 bg-navy-100 rounded-lg flex items-center justify-center">
                 <span className="text-navy-600 text-sm">👤</span>
               </div>
             </div>
             <div className="text-2xl font-bold text-navy">{stats.profileCompletion}%</div>
-            <div className="text-xs text-gray-500">Complete</div>
+            <div className="text-xs text-gray-500">{t.dashboard.profileDesc}</div>
           </div>
         </div>
 
@@ -202,9 +204,9 @@ export default function Dashboard() {
         <div className="border-b border-gray-200 mb-6">
           <nav className="flex space-x-8">
             {[
-              { id: 'overview', label: 'Overview', icon: '📊' },
-              { id: 'applications', label: 'Applications', icon: '📋' },
-              { id: 'analytics', label: 'Analytics', icon: '📈' }
+              { id: 'overview', label: t.dashboard.overview, icon: '📊' },
+              { id: 'applications', label: t.dashboard.applications, icon: '📋' },
+              { id: 'analytics', label: t.dashboard.analytics, icon: '📈' }
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -228,7 +230,7 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Recent Applications */}
               <div>
-                <h3 className="font-serif text-xl text-navy mb-4">Recent Applications</h3>
+                <h3 className="font-serif text-xl text-navy mb-4">{t.dashboard.recentApplications}</h3>
                 <div className="space-y-4">
                   {applications.slice(0, 5).map((app) => (
                     <div key={app.id} className="bg-white rounded-xl border border-gray-200 p-4 shadow-soft">
@@ -242,9 +244,9 @@ export default function Dashboard() {
                         </span>
                       </div>
                       <div className="flex items-center justify-between text-xs text-gray-500">
-                        <span>Applied {new Date(app.appliedDate).toLocaleDateString()}</span>
+                        <span>{new Date(app.appliedDate).toLocaleDateString()}</span>
                         <span className={getDeadlineColor(getDaysUntilDeadline(app.deadline))}>
-                          Deadline: {getDaysUntilDeadline(app.deadline)} days
+                          {getDaysUntilDeadline(app.deadline)} {t.dashboard.daysLeft}
                         </span>
                       </div>
                     </div>
@@ -252,14 +254,14 @@ export default function Dashboard() {
                 </div>
                 {applications.length > 5 && (
                   <Link href="/dashboard?tab=applications" className="btn btn-outline w-full mt-4">
-                    View All Applications
+                    {t.dashboard.viewAll}
                   </Link>
                 )}
               </div>
 
               {/* Upcoming Deadlines */}
               <div>
-                <h3 className="font-serif text-xl text-navy mb-4">Upcoming Deadlines</h3>
+                <h3 className="font-serif text-xl text-navy mb-4">{t.dashboard.upcomingDeadlines}</h3>
                 <div className="space-y-3">
                   {applications
                     .filter(app => app.status === 'applied' || app.status === 'interview')
@@ -276,7 +278,7 @@ export default function Dashboard() {
                               daysUntil <= 7 ? 'bg-amber-100 text-amber-700' :
                               'bg-gray-100 text-gray-700'
                             }`}>
-                              {daysUntil <= 0 ? 'Overdue' : `${daysUntil} days`}
+                              {daysUntil <= 0 ? t.dashboard.overdue : `${daysUntil} ${t.dashboard.daysLeft}`}
                             </span>
                           </div>
                           <p className="text-sm text-gray-600">{app.organization}</p>
@@ -291,16 +293,16 @@ export default function Dashboard() {
           {activeTab === 'applications' && (
             <div>
               <div className="flex items-center justify-between mb-6">
-                <h3 className="font-serif text-xl text-navy">All Applications</h3>
+                <h3 className="font-serif text-xl text-navy">{t.dashboard.allApplications}</h3>
                 <div className="flex items-center gap-4">
                   <select className="form-control text-sm w-40">
-                    <option value="all">All Status</option>
-                    <option value="saved">Saved</option>
-                    <option value="applied">Applied</option>
-                    <option value="interview">Interview</option>
-                    <option value="offered">Offer</option>
+                    <option value="all">{t.dashboard.allStatus}</option>
+                    <option value="saved">{t.dashboard.status.saved}</option>
+                    <option value="applied">{t.dashboard.status.applied}</option>
+                    <option value="interview">{t.dashboard.status.interview}</option>
+                    <option value="offered">{t.dashboard.status.offered}</option>
                   </select>
-                  <button className="btn btn-primary btn-sm">Export</button>
+                  <button className="btn btn-primary btn-sm">{t.dashboard.export}</button>
                 </div>
               </div>
               
@@ -309,12 +311,12 @@ export default function Dashboard() {
                   <table className="w-full">
                     <thead className="bg-gray-50 border-b border-gray-200">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Opportunity</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Organization</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Applied</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deadline</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t.dashboard.table.opportunity}</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t.dashboard.table.organization}</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t.dashboard.table.status}</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t.dashboard.table.applied}</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t.dashboard.table.deadline}</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t.dashboard.table.actions}</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
@@ -366,13 +368,13 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Application Funnel */}
               <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-soft">
-                <h3 className="font-serif text-xl text-navy mb-4">Application Funnel</h3>
+                <h3 className="font-serif text-xl text-navy mb-4">{t.dashboard.applicationFunnel}</h3>
                 <div className="space-y-4">
                   {[
-                    { label: 'Saved Opportunities', count: stats.totalSaved, color: 'bg-gray-200' },
-                    { label: 'Applications Submitted', count: stats.totalApplied, color: 'bg-blue-200' },
-                    { label: 'Interviews Scheduled', count: stats.interviewsScheduled, color: 'bg-purple-200' },
-                    { label: 'Offers Received', count: stats.offersReceived, color: 'bg-emerald-200' },
+                    { label: t.dashboard.savedDesc, count: stats.totalSaved, color: 'bg-gray-200' },
+                    { label: t.dashboard.appliedDesc, count: stats.totalApplied, color: 'bg-blue-200' },
+                    { label: t.dashboard.interviewsDesc, count: stats.interviewsScheduled, color: 'bg-purple-200' },
+                    { label: t.dashboard.offersDesc, count: stats.offersReceived, color: 'bg-emerald-200' },
                   ].map((item, index) => (
                     <div key={index} className="flex items-center justify-between">
                       <span className="text-sm text-gray-600">{item.label}</span>
@@ -392,28 +394,28 @@ export default function Dashboard() {
 
               {/* Success Rate */}
               <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-soft">
-                <h3 className="font-serif text-xl text-navy mb-4">Success Metrics</h3>
+                <h3 className="font-serif text-xl text-navy mb-4">{t.dashboard.successMetrics}</h3>
                 <div className="space-y-6">
                   <div className="text-center">
                     <div className="text-3xl font-bold text-emerald-600 mb-2">
                       {stats.totalApplied > 0 ? Math.round((stats.offersReceived / stats.totalApplied) * 100) : 0}%
                     </div>
-                    <div className="text-sm text-gray-600">Offer Rate</div>
+                    <div className="text-sm text-gray-600">{t.dashboard.offerRate}</div>
                   </div>
                   <div className="text-center">
                     <div className="text-3xl font-bold text-blue-600 mb-2">
                       {stats.interviewsScheduled > 0 ? Math.round((stats.interviewsScheduled / stats.totalApplied) * 100) : 0}%
                     </div>
-                    <div className="text-sm text-gray-600">Interview Rate</div>
+                    <div className="text-sm text-gray-600">{t.dashboard.interviewRate}</div>
                   </div>
                   <div className="grid grid-cols-2 gap-4 mt-6">
                     <div className="text-center p-4 bg-gray-50 rounded-lg">
                       <div className="text-lg font-bold text-navy">{stats.totalApplied}</div>
-                      <div className="text-xs text-gray-600">Total Applications</div>
+                      <div className="text-xs text-gray-600">{t.dashboard.totalApplications}</div>
                     </div>
                     <div className="text-center p-4 bg-emerald-50 rounded-lg">
                       <div className="text-lg font-bold text-emerald-600">{stats.offersReceived}</div>
-                      <div className="text-xs text-gray-600">Total Offers</div>
+                      <div className="text-xs text-gray-600">{t.dashboard.totalOffers}</div>
                     </div>
                   </div>
                 </div>

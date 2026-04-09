@@ -5,8 +5,11 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { loadProfile } from "@/lib/matching";
 import { OPPORTUNITIES, Opportunity } from "@/data/opportunities";
+import LanguageSwitcher from "./LanguageSwitcher";
+import { useLanguage } from "@/lib/LanguageContext";
 
 export default function Navbar() {
+  const { t } = useLanguage();
   const pathname = usePathname();
   const router = useRouter();
   const [hasProfile, setHasProfile] = useState(false);
@@ -92,9 +95,9 @@ export default function Navbar() {
   };
 
   const navLinks = hasProfile ? [
-    { href: "/home", label: "Opportunities" },
-    { href: "/saved", label: "Saved" },
-    { href: "/dashboard", label: "Dashboard" },
+    { href: "/home", label: t.nav.opportunities },
+    { href: "/saved", label: t.nav.saved },
+    { href: "/dashboard", label: t.nav.dashboard },
     // { href: "/profile", label: "Profile" },
   ] : [];
 
@@ -122,7 +125,7 @@ export default function Navbar() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onFocus={() => setIsSearchOpen(true)}
-              placeholder="Search opportunities..."
+              placeholder={t.nav.searchPlaceholder}
               className="w-full px-4 py-2 pl-10 pr-4 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-navy focus:border-transparent transition-all duration-200"
             />
             <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
@@ -151,6 +154,9 @@ export default function Navbar() {
               {link.label}
             </NavLink>
           ))}
+          <div className="ml-2">
+            <LanguageSwitcher />
+          </div>
         </div>
           
         
@@ -212,7 +218,7 @@ export default function Navbar() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search opportunities..."
+                placeholder={t.nav.searchPlaceholder}
                 className="w-full px-4 py-2 pl-10 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-navy focus:border-transparent"
               />
               <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
@@ -238,6 +244,14 @@ export default function Navbar() {
                   {link.label}
                 </Link>
               ))}
+
+              {/* Language Switcher - Mobile */}
+              <div className="px-4 py-3 border-t border-gray-100 mt-2">
+                <span className="text-xs text-gray-500 uppercase tracking-wider">Language / اللغة</span>
+                <div className="mt-2">
+                  <LanguageSwitcher />
+                </div>
+              </div>
               
               {!hasProfile && (
                 <Link

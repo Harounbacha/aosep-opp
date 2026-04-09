@@ -1,15 +1,19 @@
-import Link from "next/link";
+"use client";
 
-const COMING_SOON = [
-  "Learning Paths",
-  "Peer Mentorship",
-  "Training Centers",
-  "Study Abroad Guide",
-  "Portfolio Builder",
-  "Global Mobility Support",
-];
+import Link from "next/link";
+import { useLanguage } from "@/lib/LanguageContext";
 
 export default function Footer() {
+  const { t } = useLanguage();
+
+  const comingSoon = [
+    t.landing.features.learningPaths.title,
+    t.landing.features.peerMentorship.title,
+    t.landing.features.trainingCenters.title,
+    t.landing.features.studyAbroad.title,
+    t.landing.features.portfolioBuilder.title,
+    "Global Mobility Support",
+  ];
   return (
     <footer
       style={{
@@ -36,8 +40,7 @@ export default function Footer() {
             AOSEP
           </div>
           <p style={{ fontSize: 13, lineHeight: 1.7 }}>
-            Algerian Open Systems &amp; Education Platform. Democratizing access to global opportunities for Algerian
-            students.
+            {t.footer.description}
           </p>
           <Link
             href="/onboarding"
@@ -53,7 +56,7 @@ export default function Footer() {
               textDecoration: "none",
             }}
           >
-            Get Started →
+            {t.footer.getStarted} →
           </Link>
         </div>
 
@@ -69,7 +72,7 @@ export default function Footer() {
                 fontWeight: 600,
               }}
             >
-              Platform
+              {t.footer.platform}
             </div>
             {["Opportunities ✓", "Match Engine ✓", "Save & Track ✓"].map((item) => (
               <div key={item} style={{ fontSize: 13, marginBottom: ".5rem" }}>
@@ -89,9 +92,9 @@ export default function Footer() {
                 fontWeight: 600,
               }}
             >
-              Coming Soon
+              {t.footer.comingSoon}
             </div>
-            {COMING_SOON.slice(0, 3).map((item) => (
+            {comingSoon.slice(0, 3).map((item: string) => (
               <div key={item} style={{ fontSize: 13, marginBottom: ".5rem", display: "flex", alignItems: "center", gap: 6 }}>
                 {item}
                 <span
@@ -119,9 +122,9 @@ export default function Footer() {
                 fontWeight: 600,
               }}
             >
-              Roadmap
+              {t.footer.roadmap}
             </div>
-            {COMING_SOON.slice(3).map((item) => (
+            {comingSoon.slice(3).map((item: string) => (
               <div key={item} style={{ fontSize: 13, marginBottom: ".5rem", display: "flex", alignItems: "center", gap: 6 }}>
                 {item}
                 <span
@@ -152,8 +155,8 @@ export default function Footer() {
           gap: "0.5rem",
         }}
       >
-        <span>© 2026 AOSEP · University Center Si El-Houes, Barika</span>
-        <span>Built by the AOSEP Team</span>
+        <span>© {t.footer.copyright}</span>
+        <span>{t.footer.builtBy}</span>
       </div>
     </footer>
   );
