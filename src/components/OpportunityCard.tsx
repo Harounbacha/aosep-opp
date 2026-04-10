@@ -33,9 +33,9 @@ export default function OpportunityCard({ opp, profile, saved, onSave }: Props) 
   };
 
   const getDeadlineIcon = () => {
-    if (daysUntilDeadline <= 3) return "?";
-    if (daysUntilDeadline <= 7) return "?";
-    return "?";
+    if (daysUntilDeadline <= 3) return "⏰";
+    if (daysUntilDeadline <= 7) return "⚠️";
+    return "📅";
   };
 
   return (
@@ -134,12 +134,12 @@ export default function OpportunityCard({ opp, profile, saved, onSave }: Props) 
         </div>
 
         {/* Description Preview */}
-        <div className="text-sm text-gray-600 line-clamp-2">
+        <div className="text-sm text-gray-600 leading-relaxed line-clamp-2">
           {opp.description || "Discover this amazing opportunity that matches your profile and career goals."}
         </div>
 
         {/* Footer with Actions and Deadline */}
-        <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-gray-100">
           <div className="flex items-center gap-4">
             {/* Deadline */}
             <div className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium ${getDeadlineColor()}`}>
@@ -157,18 +157,23 @@ export default function OpportunityCard({ opp, profile, saved, onSave }: Props) 
             </span>
           </div>
 
-          {/* Quick Actions */}
+          {/* Primary actions */}
           <div className="flex items-center gap-2">
-            <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m9.032 4.026a9.001 9.001 0 01-7.432 0m9.032-4.026A9.001 9.001 0 0112 3c-4.474 0-8.268 3.12-9.032 7.326m0 0A9.001 9.001 0 0012 21c4.474 0 8.268-3.12 9.032-7.326" />
-              </svg>
+            <button
+              type="button"
+              onClick={() => setIsExpanded((v) => !v)}
+              className="px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-gray-900 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              {isExpanded ? "Less details" : "More details"}
             </button>
-            <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m9.032 4.026a9.001 9.001 0 01-7.432 0" />
-              </svg>
-            </button>
+            <a
+              href={opp.official}
+              target="_blank"
+              rel="noreferrer"
+              className="btn btn-primary btn-sm"
+            >
+              Apply Now
+            </a>
           </div>
         </div>
 
@@ -207,9 +212,14 @@ export default function OpportunityCard({ opp, profile, saved, onSave }: Props) 
               >
                 View Details
               </Link>
-              <button className="btn btn-outline flex-1">
+              <a
+                href={opp.official}
+                target="_blank"
+                rel="noreferrer"
+                className="btn btn-outline flex-1 text-center"
+              >
                 Apply Now
-              </button>
+              </a>
             </div>
           </div>
         )}

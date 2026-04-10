@@ -4,6 +4,7 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useLanguage } from "@/lib/LanguageContext";
+import { COUNTRIES, FIELDS, OPPORTUNITIES } from "@/data/opportunities";
 
 export default function LandingPage() {
   const { t, language } = useLanguage();
@@ -48,9 +49,9 @@ export default function LandingPage() {
   ];
 
   const stats = [
-    { val: "12+", label: t.landing.stats.opportunities },
-    { val: "12", label: t.landing.stats.countries },
-    { val: "3", label: t.landing.stats.fields },
+    { val: `${OPPORTUNITIES.length}+`, label: t.landing.stats.opportunities },
+    { val: `${COUNTRIES.length - 1}`, label: t.landing.stats.countries },
+    { val: `${FIELDS.length - 1}`, label: t.landing.stats.fields },
     { val: language === 'dz' ? 'مجاني' : 'Free', label: t.landing.stats.free },
   ];
 
@@ -132,19 +133,6 @@ export default function LandingPage() {
           </Link>
         </div>
 
-        <div style={{ display: "flex", gap: 6, justifyContent: "center", marginTop: "3rem" }}>
-          {[0, 1, 2, 3, 4].map((i) => (
-            <div
-              key={i}
-              style={{
-                width: i === 0 ? 18 : 6,
-                height: 6,
-                borderRadius: i === 0 ? 3 : "50%",
-                background: i === 0 ? "var(--emerald)" : "var(--border)",
-              }}
-            />
-          ))}
-        </div>
       </section>
 
       {/* Stats strip */}
@@ -168,9 +156,9 @@ export default function LandingPage() {
       </div>
 
       {/* Features */}
-      <section style={{ padding: "5rem 1.5rem" }}>
+      <section style={{ padding: "5.5rem 1.5rem" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+          <div style={{ textAlign: "center", marginBottom: "3.5rem" }}>
             <p className="section-label" style={{ marginBottom: "0.75rem" }}>
               {t.landing.features.title}
             </p>
